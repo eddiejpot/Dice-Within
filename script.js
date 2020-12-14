@@ -1,25 +1,73 @@
 // Global variables
 var gameCounter = 0;
+var diceRollOne = 'change every round';
+var withinNum = 'change every round';
 
-// Dice roll function
-var rollDice = function () {
-  var randomDecimal = Math.random() * 6;
-  var randomInteger = Math.floor(randomDecimal);
-  var diceNumber = randomInteger + 1;
-  return diceNumber;
+// Controlled random number function (Dice Roll & Within Number)
+var randomNumGenerator = function (min, max) {
+  // generate a random number from min to max
+  var randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+  return randomNumber;
 };
 
-// Main function
-var main = function (input) {
-  // Roll dice one and two
-  diceRollOne = rollDice();
-  diceRollTwo = rollDice();
-  //
-  var myOutputValue = `Better luck next time! Dice one was ${diceRollOne}. Dice two was ${diceRollTwo}`;
-  // START GAME
-  if ((diceRollOne == 5) && (diceRollTwo == 6)) {
-    myOutputValue = `Lucky 11! Dice one was ${diceRollOne}. Dice two was ${diceRollTwo}`;
+// Start new game function
+var startNewGame = function () {
+  // Within number (from 1 to 12)
+  diceRollOne = randomNumGenerator(1, 12);
+  console.log(`Dice roll : ${diceRollOne}`);
+  // Within number (from 1 to 3)
+  withinNum = randomNumGenerator(1, 3);
+  console.log(`Within : ${withinNum}`);
+};
+
+// Winning Logic Function
+// ensure that min number does not go below one
+var lessThanZero = function (input) {
+  var changeNegative = input;
+  if (input < 0) {
+    changeNegative = 1;
   }
+  return changeNegative;
+};
+// player guess has to be within the within number of the dice rolls
+var winningLogic = function (input) {
+  var winningLogicOutput = '';
+  // set minimum within num
+  var minWithin = lessThanZero(diceRollOne - withinNum);
+  // set maximum within num
+  var maxWithin = diceRollOne + withinNum;
+  // wrong answer
+  winningLogicOutput = 'You lose!';
+  // right answer
+  // if player guess is equals to diceRoll OR within minmum within number OR withing max within number
+  if ((input == diceRollOne)
+  || (input >= minWithin)
+  && (input <= maxWithin)) {
+    winningLogicOutput = 'START NEW GAME' + '<br>' + 'WINNER!' + '<br>' + `Previous Dice roll: ${diceRollOne}. Previous within Number: ${withinNum}`;
+    // Start new game
+    startNewGame();
+  }
+  // if empty input
+  if (input.trim() == '') {
+    winningLogicOutput = 'You cannot leave it blank!';
+  }
+  return winningLogicOutput;
+};
+
+/* ------------------------------------------------------------- */
+/* ------------------------PRE GAME----------------------------- */
+/* ------------------------------------------------------------- */
+startNewGame();
+
+/* ------------------------------------------------------------- */
+/* ------------------------MAIN FUNCTION------------------------ */
+/* ------------------------------------------------------------- */
+var main = function (input) {
+  // // TEST
+  // diceRollOne = 1;
+  // withinNum = 3;
+  // START GAME Winning Logic
+  var myOutputValue = winningLogic(input);
   // Add to game counter
   gameCounter += 1;
   // Output
