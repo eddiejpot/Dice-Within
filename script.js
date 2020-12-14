@@ -1,5 +1,5 @@
 // Global variables
-var gameCounter = 0;
+var scoreBoard = 0;
 // Variables for dice
 var currentDiceRoll = '';
 var currentWithinNum = '';
@@ -7,7 +7,9 @@ var getDiceRoll1 = 'change every round';
 var getWithinNumber1 = 'change every round';
 var getDiceRoll2 = 'change every round';
 var getWithinNumber2 = 'change every round';
-var diceCounter = 0;
+var fourDWinningNum = 'change every round';
+
+/* -------------------------DICE GAME------------------------------------ */
 
 // Controlled random number function (Dice Roll & Within Number)
 var randomNumGenerator = function (min, max) {
@@ -18,7 +20,6 @@ var randomNumGenerator = function (min, max) {
 
 // Get dice roll & within number
 var startDiceRollAndWithinNum = function () {
-  diceCounter += 1;
   // Within number (from 1 to 12)
   currentDiceRoll = randomNumGenerator(1, 12);
   // Within number (from 1 to 3)
@@ -57,7 +58,7 @@ var winningLogic = function (diceRoll, withinNum, userInput) {
   || (userInput >= minWithin)
   && (userInput <= maxWithin)) {
     winningLogicOutput = 1;
-    // Start new game
+    // Start new dice game
     startDiceRollAndWithinNum();
   }
   // if empty input
@@ -67,61 +68,112 @@ var winningLogic = function (diceRoll, withinNum, userInput) {
   return winningLogicOutput;
 };
 
+/* -------------------------4D GAME------------------------------------ */
+
+// create a function that generates 4D number
+var fourDGenerator = function () {
+  // generate number from 0 to 9
+  var randomNumber1 = Math.floor(Math.random() * 10);
+  var randomNumber2 = Math.floor(Math.random() * 10);
+  var randomNumber3 = Math.floor(Math.random() * 10);
+  var randomNumber4 = Math.floor(Math.random() * 10);
+  fourDWinningNum = `${randomNumber1}${randomNumber2}${randomNumber3}${randomNumber4}`;
+};
+
+// 4D Win Logic
+var fourDWinLogic = function (input) {
+  // if lose
+  var fourDReults = 0;
+  // if win
+  if ((input == fourDWinningNum)) {
+    fourDReults = 1;
+  }
+  return fourDReults;
+};
+
 /* ------------------------------------------------------------- */
 /* ------------------------PRE GAME----------------------------- */
 /* ------------------------------------------------------------- */
-// // 2 sets of dices & within numbers
-// startDiceRollAndWithinNum();
-// getDiceRoll1 = currentDiceRoll;
-// getWithinNumber1 = currentWithinNum;
-// // PRINT TEST
-// console.log(`*Dice ${diceCounter}* Dice roll: ${currentDiceRoll}`);
-// console.log(`*Dice ${diceCounter}* Within number: ${currentWithinNum}`);
 
-// startDiceRollAndWithinNum();
-// getDiceRoll2 = currentDiceRoll;
-// getWithinNumber2 = currentWithinNum;
-// // PRINT TEST
-// console.log(`*Dice ${diceCounter}* Dice roll: ${currentDiceRoll}`);
-// console.log(`*Dice ${diceCounter}* Within number: ${currentWithinNum}`);
+var starNewDiceGameWith2Dice = function () {
+  startDiceRollAndWithinNum();
+  // currentDiceRoll = 2;
+  // currentWithinNum = 1;
+  getDiceRoll1 = currentDiceRoll;
+  getWithinNumber1 = currentWithinNum;
+  // PRINT TEST
+  console.log(`*Dice 1* Dice roll: ${currentDiceRoll}`);
+  console.log(`*Dice 1* Within number: ${currentWithinNum}`);
 
-/* ------------------------TEST----------------------------- */
-/* ------------------------PRE GAME----------------------------- */
-/* ------------------------TEST----------------------------- */
-startDiceRollAndWithinNum();
-currentDiceRoll = 3;
-currentWithinNum = 1;
-getDiceRoll1 = currentDiceRoll;
-getWithinNumber1 = currentWithinNum;
-// PRINT TEST
-console.log(`*Dice ${diceCounter}* Dice roll: ${currentDiceRoll}`);
-console.log(`*Dice ${diceCounter}* Within number: ${currentWithinNum}`);
+  startDiceRollAndWithinNum();
+  // currentDiceRoll = 3;
+  // currentWithinNum = 1;
+  getDiceRoll2 = currentDiceRoll;
+  getWithinNumber2 = currentWithinNum;
+  // PRINT TEST
+  console.log(`*Dice 2* Dice roll: ${currentDiceRoll}`);
+  console.log(`*Dice 2* Within number: ${currentWithinNum}`);
+};
 
-startDiceRollAndWithinNum();
-currentDiceRoll = 12;
-currentWithinNum = 1;
-getDiceRoll2 = currentDiceRoll;
-getWithinNumber2 = currentWithinNum;
-// PRINT TEST
-console.log(`*Dice ${diceCounter}* Dice roll: ${currentDiceRoll}`);
-console.log(`*Dice ${diceCounter}* Within number: ${currentWithinNum}`);
+starNewDiceGameWith2Dice();
 
 /* ------------------------------------------------------------- */
 /* ------------------------MAIN FUNCTION------------------------ */
 /* ------------------------------------------------------------- */
 var main = function (input) {
-  // START GAME Winning Logic -> arguements (diceRoll, withinNum, userInput)
-  myOutputValue = 'If you left it blank or you got the wrong answer. You Lose!';
-  // check if dice 1 guess is correct
-  var checkDiceOne = winningLogic(getDiceRoll1, getWithinNumber1, input);
-  // check if dice 2 guess is correct
-  var checkDiceTwo = winningLogic(getDiceRoll2, getWithinNumber2, input);
-  // if both guesses are within range. Win
-  if (checkDiceOne == 1 || checkDiceTwo == 1) {
-    myOutputValue = 'YOU WON!';
+  var myOutputValue = '';
+  // If score is below 2. Play dice within game
+  if (scoreBoard < 2) {
+    // START GAME
+    // if guess is wrong
+    var diceWithinOutputValue = 'If you left it blank or you got the wrong answer. You Lose!';
+    // Check if dice 1 guess is correct. arguements (diceRoll, withinNum, userInput)
+    var checkDiceOne = winningLogic(getDiceRoll1, getWithinNumber1, input); // returns 1 if win
+    // check if dice 2 guess is correct. arguements (diceRoll, withinNum, userInput)
+    var checkDiceTwo = winningLogic(getDiceRoll2, getWithinNumber2, input); // returns 1 if win
+    // if both guesses are within range. Win
+    if ((scoreBoard < 2) && (checkDiceOne == 1 || checkDiceTwo == 1)) {
+      // increase score on scoreboard
+      diceWithinOutputValue = 'YOU WON! THE DICE GAME';
+      scoreBoard += 1;
+      console.log('Scoreboard:' + scoreBoard);
+    }
+    if ((scoreBoard == 2) && (checkDiceOne == 1 || checkDiceTwo == 1)) {
+      console.log('CURRENT GAME MODE: 4D ROUND');
+      // increase score on scoreboard
+      diceWithinOutputValue = 'You got 2 guesses correct!' + '<br>' + 'Entering bonus 4D round. Guess the 4D number';
+      // generate 4D number
+      fourDGenerator();
+      console.log(fourDWinningNum);
+    }
+    // Set Ouput for dice within
+    myOutputValue = diceWithinOutputValue;
+    return myOutputValue;
   }
-  // Add to game counter
-  gameCounter += 1;
-  // Output
-  return myOutputValue + '<br>' + 'Games Played:  ' + gameCounter;
+
+  // if score is 2. Start game
+  // start 4D game
+  if (scoreBoard == 2) {
+    console.log('CURRENT GAME MODE: 4DGAME');
+    // START GAME
+    var check4Dguess = fourDWinLogic(input);
+    if (check4Dguess == 0) {
+      myOutputValue = 'You got the 4D number wrong' + '<br>' + 'Going back to the dice game';
+      // clear score on scoreboard
+      scoreBoard = 0;
+      console.log('Scoreboard:' + scoreBoard);
+      starNewDiceGameWith2Dice();
+      return myOutputValue;
+    }
+    if (check4Dguess == 1) {
+      myOutputValue = 'You got the 4D number Right!' + '<br>' + 'Going back to the dice game';
+      // clear score on scoreboard
+      scoreBoard = 0;
+      console.log('Scoreboard:' + scoreBoard);
+      starNewDiceGameWith2Dice();
+      return myOutputValue;
+    }
+  }
+  // Check score board
+  console.log('The score board is now: ' + scoreBoard);
 };
